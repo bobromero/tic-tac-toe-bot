@@ -9,7 +9,6 @@ let winCombinations = [
     [0,4,8],
     [2,4,6],
 ]
-let turn
 const Grid = (array) =>{
     const [playBot, setPlayBot] = useState(true);
     const [moves, setMoves] = useState(0);
@@ -32,32 +31,43 @@ const Grid = (array) =>{
         setTurn(!turn);
         setMoves(moves + 1);
         played.push(index);
+        let hasWon = checkWin(array.array, turn ? "x" : "o");
+        if (hasWon){
+            console.log('win');
+            setGameOver(true);
+            setPlayBot(false);
+        }
+        if (played.length == array.array.length && hasWon == false){
+            console.log("Game Over Draw");
+            setGameOver(true);
+            setPlayBot(false);
+        }
     }
     function play(index){
         if(gameOver){
             return;
         }
         playMove(index);
-        if (checkWin(array.array, turn ? "x" : "o")){
-            console.log('win');
-            setGameOver(true);
-            setPlayBot(false);
-        }
-        if (played.length == array.array.length){
-            console.log("Game Over Draw");
-            setGameOver(true);
-            setPlayBot(false);
-        }
+        
         if(playBot == false){
             return;
         }
-        BotMove()
     }
     function BotMove(){
         if(playBot == false){
             return;
         }
-        playMove(Math.round(Math.random() * 8));
+        let possibleMove = []
+        for (let i = 0; i < array.array.length; i++){
+            if (played.includes(i)){
+                console.log(`something at ${i}`)
+            }
+            else{
+                possibleMove.push(i);
+            }
+        }
+        let BestMove = Math.round(Math.random() * possibleMove.length -1);
+        playMove(BestMove);
     }
     for(let i = 0; i < array.array.length; i++){
         let cubeStyle = {
@@ -74,6 +84,7 @@ const Grid = (array) =>{
     return(
         <div className="grid">
             {game}
+            <button onClick={BotMove}>make bot move</button>
         </div>
     );
 }
