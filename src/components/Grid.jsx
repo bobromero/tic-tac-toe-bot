@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 let winCombinations = [
     [0,1,2],
     [3,4,5],
@@ -9,6 +9,7 @@ let winCombinations = [
     [0,4,8],
     [2,4,6],
 ]
+let turn
 const Grid = (array) =>{
     const [playBot, setPlayBot] = useState(true);
     const [moves, setMoves] = useState(0);
@@ -23,24 +24,6 @@ const Grid = (array) =>{
             })
         })
     }
-    function play(index){
-        if(gameOver){
-            return;
-        }
-        // if(!turn && playBot){
-        //     return;
-        // }
-        playMove(index);
-        if (checkWin(array.array, turn ? "x" : "o")){
-            console.log('win');
-            setGameOver(true);
-        }
-        if (played.length == array.array.length){
-            console.log("Game Over Draw");
-            setGameOver(true);
-        }
-
-    }
     function playMove(index){
         if (played.includes(index)){
             return;
@@ -50,14 +33,31 @@ const Grid = (array) =>{
         setMoves(moves + 1);
         played.push(index);
     }
+    function play(index){
+        if(gameOver){
+            return;
+        }
+        playMove(index);
+        if (checkWin(array.array, turn ? "x" : "o")){
+            console.log('win');
+            setGameOver(true);
+            setPlayBot(false);
+        }
+        if (played.length == array.array.length){
+            console.log("Game Over Draw");
+            setGameOver(true);
+            setPlayBot(false);
+        }
+        if(playBot == false){
+            return;
+        }
+        BotMove()
+    }
     function BotMove(){
-        if(turn){
+        if(playBot == false){
             return;
         }
-        if(!playBot){
-            return;
-        }
-
+        playMove(Math.round(Math.random() * 8));
     }
     for(let i = 0; i < array.array.length; i++){
         let cubeStyle = {
