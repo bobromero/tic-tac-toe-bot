@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 let winCombinations = [
     [0,1,2],
     [3,4,5],
@@ -10,6 +10,7 @@ let winCombinations = [
     [2,4,6],
 ]
 const Grid = (array) =>{
+    const [playBot, setPlayBot] = useState(true);
     const [moves, setMoves] = useState(0);
     const [turn, setTurn] = useState(true);
     const [gameOver, setGameOver] = useState(false)
@@ -26,13 +27,10 @@ const Grid = (array) =>{
         if(gameOver){
             return;
         }
-        if (played.includes(index)){
-            return;
-        }
-        array.array[index] = turn ? 'x' : 'o';
-        setTurn(!turn);
-        setMoves(moves + 1);
-        played.push(index);
+        // if(!turn && playBot){
+        //     return;
+        // }
+        playMove(index);
         if (checkWin(array.array, turn ? "x" : "o")){
             console.log('win');
             setGameOver(true);
@@ -41,6 +39,25 @@ const Grid = (array) =>{
             console.log("Game Over Draw");
             setGameOver(true);
         }
+
+    }
+    function playMove(index){
+        if (played.includes(index)){
+            return;
+        }
+        array.array[index] = turn ? 'x' : 'o';
+        setTurn(!turn);
+        setMoves(moves + 1);
+        played.push(index);
+    }
+    function BotMove(){
+        if(turn){
+            return;
+        }
+        if(!playBot){
+            return;
+        }
+
     }
     for(let i = 0; i < array.array.length; i++){
         let cubeStyle = {

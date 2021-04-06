@@ -10,8 +10,7 @@ function App() {
       <Router>
       <Switch>
         <Route exact path="/" component={MainPage} />
-        <Route exact path="/1PlayerGame" component={GameManager}/>
-        <Route exact path="/2PlayerGame" component={GameManager}/>
+        <Route exact path="/Game" component={GameManager}/>
         <Route exact path="/404" component={MainPage} />
         <Redirect to="/404"/>
       </Switch>
