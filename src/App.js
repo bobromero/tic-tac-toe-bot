@@ -1,23 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
+import GameManager from './components/GameManager';
+import MainPage from './components/MainPage';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+      <Switch>
+        <Route exact path="/" component={MainPage} />
+        <Route exact path="/1PlayerGame" component={GameManager}/>
+        <Route exact path="/2PlayerGame" component={GameManager}/>
+        <Route exact path="/404" component={MainPage} />
+        <Redirect to="/404"/>
+      </Switch>
+        
+
+    </Router>
     </div>
   );
 }
