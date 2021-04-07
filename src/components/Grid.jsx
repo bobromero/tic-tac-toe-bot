@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 let winCombinations = [
     [0,1,2],
     [3,4,5],
@@ -9,6 +9,7 @@ let winCombinations = [
     [0,4,8],
     [2,4,6],
 ]
+let gameStatus = null;
 const Grid = (array) =>{
     const [playBot, setPlayBot] = useState(true);
     const [moves, setMoves] = useState(0);
@@ -16,6 +17,16 @@ const Grid = (array) =>{
     const [gameOver, setGameOver] = useState(false)
     const [played] = useState([]);
     let game = [];
+    function checkWinner(){
+        let winner = null;
+        if (checkWin(array.array, turn ? "x" : "o")){
+            winner = turn ? "x" : "o";
+        }
+        if(gameOver && checkWin(array.array, turn ? "x" : "o") == false){
+            winner = 'tie'
+        }
+        return winner;
+    }
     function checkWin(game, player){
         return winCombinations.some(combination=>{
             return combination.every(index =>{
@@ -34,11 +45,13 @@ const Grid = (array) =>{
         let hasWon = checkWin(array.array, turn ? "x" : "o");
         if (hasWon){
             console.log('win');
+            gameStatus = turn ? "x" : "o";
             setGameOver(true);
             setPlayBot(false);
         }
         if (played.length == array.array.length && hasWon == false){
             console.log("Game Over Draw");
+            gameStatus = "tie";
             setGameOver(true);
             setPlayBot(false);
         }
@@ -57,17 +70,71 @@ const Grid = (array) =>{
         if(playBot == false){
             return;
         }
-        let possibleMove = []
+        let BestMove;
+        let BestScore = -Infinity;
+        let possibleMove = [];
         for (let i = 0; i < array.array.length; i++){
-            if (played.includes(i)){
-                console.log(`something at ${i}`)
-            }
-            else{
+            if (array.array[i] == null){
                 possibleMove.push(i);
+                array.array[i] = 'x';
+                let score = minimax(array.array, 0, turn)
+                array.array[i] = null;
+                if (score > BestScore) {
+                    BestScore = score;
+                    BestMove = i;
+                }
             }
         }
-        let BestMove = Math.round(Math.random() * possibleMove.length -1);
+        if (played.includes(BestMove)){
+            BotMove();
+        }
         playMove(BestMove);
+    }
+    function minimax(board, depth, isMaxing){
+        let result = checkWin(board, turn ? "x" : "o");
+        console.log(result)
+        if (result !== null){
+            if (result){
+                return turn ? 1 : -1;
+            }
+            return 0;
+        }
+        // if(played.length == board.length){
+        //     return 0;
+        // }
+        // if(checkWin(board, turn ? "x" : "o") && turn){
+        //     return 1;
+        // }
+        // if(checkWin(board, turn ? "x" : "o") && !turn){
+        //     return -1
+        // }
+        if (isMaxing){
+            let BestScore = -Infinity;
+            for (let i = 0; i < board.length; i++){
+                if (array.array[i] == null){
+                    array.array[i] = 'x';
+                    let score = minimax(board, depth + 1, false)
+                    array.array[i] = null;
+                    if (score > BestScore) {
+                        BestScore = score;
+                    }
+                }
+            }
+            return BestScore;
+        }else{
+            let BestScore = Infinity;
+            for (let i = 0; i < board.length; i++){
+                if (array.array[i] == null){
+                    array.array[i] = 'o';
+                    let score = minimax(board, depth + 1, true)
+                    array.array[i] = null;
+                    if (score < BestScore) {
+                        BestScore = score;
+                    }
+                }
+            }
+            return BestScore;
+        }
     }
     for(let i = 0; i < array.array.length; i++){
         let cubeStyle = {
