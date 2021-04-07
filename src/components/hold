@@ -46,6 +46,7 @@ let scores = {
 }
 function minimax(board, depth, isMaxing){
     let result = checkWinner(board);
+    
     if (result !== null){
         // return scores[result];
         if(isMaxing){
@@ -56,6 +57,7 @@ function minimax(board, depth, isMaxing){
             //checking x
             return scores[result]-depth;
         }
+        
     }
     if(isMaxing){
         let BestScore = -Infinity
@@ -85,6 +87,7 @@ function minimax(board, depth, isMaxing){
         }
         return BestScore;
     }
+    
 }
 
 const Grid = (array) =>{
