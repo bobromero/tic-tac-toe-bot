@@ -1,12 +1,46 @@
 html{
   background-color: #121212;
   color: white;
-  min-height: 100vh;
+  overflow: hidden;
+}
+.MoveButtons{
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  grid-column-gap: 30px;
+  padding-bottom: 20px;
+}
+.MoveButtons button{
+  height: 50px;
+  width: 150px;
 }
 .game{
-  
+  height: 100vh;
+  width: 100vw;
+  overflow:auto;
+}
+.square{
+  height: 200px;
+  width: 200px;
+  color: white;
+}
+.square .textDiv{
+  display: grid;
+  align-items: center;
+  height: 10px;
+  margin:0;
+  text-align: center;
+  font-size: 100px;
+}
+.square .textDiv p{
+  margin:0;
+  text-align: center;
+  font-size: 130px;
+  font-weight: 500;
 }
 .App {
+  height: 100vh;
+  width: 100vw;
   text-align: center;
 }
 .grid{
