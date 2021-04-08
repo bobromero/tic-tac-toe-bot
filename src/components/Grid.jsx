@@ -44,10 +44,9 @@ let scores = {
     o: -10,
     tie: 0
 }
-function minimax(board, depth, isMaxing){
+function minimax(board, depth, isMaxing, maxingPlayer){
     let result = checkWinner(board);
     if (result !== null){
-        // return scores[result];
         if(isMaxing){
             //checking o
             return scores[result]+depth;
@@ -61,10 +60,10 @@ function minimax(board, depth, isMaxing){
         let BestScore = -Infinity
         for (let i = 0; i < 9; i++){
             if(board[i]==null){
-                board[i] = 'x';
-                let score = minimax(board, depth + 1, false);
+                board[i] = maxingPlayer ? 'x' : 'o';
+                let score = minimax(board, depth + 1, false, !maxingPlayer);
                 board[i] = null;
-                if(score > BestScore){
+                if(score > BestScore && score != -Infinity){
                     BestScore = score;
                 }
             }
@@ -75,10 +74,10 @@ function minimax(board, depth, isMaxing){
         let BestScore = Infinity
         for (let i = 0; i < 9; i++){
             if(board[i]==null){
-                board[i] = 'o';
-                let score = minimax(board, depth + 1, true);
+                board[i] = maxingPlayer ? 'x' : 'o';
+                let score = minimax(board, depth + 1, true, !maxingPlayer);
                 board[i] = null;
-                if(score < BestScore){
+                if(score < BestScore && score != Infinity){
                     BestScore = score;
                 }
             }
@@ -138,9 +137,9 @@ const Grid = (array) =>{
                     possibleMove.push(i);
                     array.array[i] = 'x';
                     console.log(BestScore)
-                    let score = minimax(array.array, 0, false)
+                    let score = minimax(array.array, 0, false, false)
                     array.array[i] = null;
-                    if (score > BestScore) {
+                    if (score > BestScore && score != -Infinity) {
                         BestScore = score;
                         BestMove = i;
                     }
@@ -154,10 +153,10 @@ const Grid = (array) =>{
             if (array.array[i] == null){
                 possibleMove.push(i);
                 array.array[i] = 'o';
+                let score = minimax(array.array, 0, true, true)
                 console.log(BestScore)
-                let score = minimax(array.array, 0, true)
                 array.array[i] = null;
-                if (score < BestScore) {
+                if (score < BestScore && score != Infinity) {
                     BestScore = score;
                     BestMove = i;
                 }
