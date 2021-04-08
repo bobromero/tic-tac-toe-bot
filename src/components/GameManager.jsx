@@ -3,7 +3,7 @@ import Grid from './Grid';
 let array = [null,null,null,null,null,null,null,null,null];
 const GameManager = () =>{
     return(
-        <div>
+        <div className="game">
             <Grid
                 array = {array}
             />

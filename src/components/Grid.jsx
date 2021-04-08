@@ -20,11 +20,9 @@ function checkWinner(board, playedBoard = 0){
     }
     //diagonal check
     if(board[0] === board[4] && board[0] === board[8]){
-        
         if(board[0] !== null && board[4] !== null){
             winner = board[0]
         }
-        
     }
     else if(board[2] === board[4] && board[2] === board[6]){
         if(board[2] !== null && board[4] !== null){
@@ -36,9 +34,6 @@ function checkWinner(board, playedBoard = 0){
     }
     return winner;
 }
-function currentPlayer(){
-    return turn ? 'x' : 'o';
-}
 let scores = {
     x: 10,
     o: -10,
@@ -47,14 +42,13 @@ let scores = {
 function minimax(board, depth, isMaxing, maxingPlayer){
     let result = checkWinner(board);
     if (result !== null){
-        if(isMaxing){
-            //checking o
-            return scores[result]+depth;
-        }
-        else{
-            //checking x
+        if(result == 'x'){
             return scores[result]-depth;
         }
+        if(result == 'o'){
+            return scores[result]+depth;
+        }
+        
     }
     if(isMaxing){
         let BestScore = -Infinity
@@ -85,62 +79,75 @@ function minimax(board, depth, isMaxing, maxingPlayer){
         return BestScore;
     }
 }
-
 const Grid = (array) =>{
-    const [playBot, setPlayBot] = useState(true);
+    // const [playBot, setPlayBot] = useState(true);
+    //moves is only here to rerender page
     const [moves, setMoves] = useState(0);
-    const [gameOver, setGameOver] = useState(false)
-    const [played] = useState([]);
+    let [played] = useState([]);
     let game = [];
-    function playMove(index){
-        
-        if (played.includes(index)){
+    function undoMove(){
+        if(moves <= 0){
+            return;
+        }
+        let lastMove = played[played.length-1];
+        playMove(lastMove, true);
+        game = played.splice(lastMove);
+        console.log(game)
+        setMoves(moves - 1);
+        return;
+    }
+    function playMove(index, undo = false){
+        if (played.includes(index) && undo == false){
             return;
         }
         array.array[index] = turn ? 'x' : 'o';
+        if(undo){
+            array.array[index] = null;
+        }
         turn = !turn
+        if(!undo){
+            played.push(index);
+        }
         setMoves(moves + 1);
-        played.push(index);
+        
+        
         let hasWon = checkWinner(array.array, played);
         if (hasWon === 'x' || hasWon === 'o'){
             console.log(`${hasWon} Won!`);
-            setGameOver(true);
-            setPlayBot(false);
+            // setPlayBot(false);
         }
         if (hasWon === 'tie'){
             console.log("Game Over: Draw");
-            setGameOver(true);
-            setPlayBot(false);
+            // setPlayBot(false);
         }
     }
     function play(index){
-        if(gameOver){
+        if(checkWinner(array.array) !== null){
             return;
         }
-        checkWinner(array.array)
         playMove(index);
-        if(playBot === false){
-            return;
-        }
     }
     function BotMove(){
-        if(playBot === false){
-            return;
-        }
+        // if(playBot === false){
+        //     return;
+        // }
         let BestMove;
         let possibleMove = [];
         
         if (turn){
+            
             let BestScore = -Infinity;
             for (let i = 0; i < 9; i++){
                 if (array.array[i] == null){
                     possibleMove.push(i);
                     array.array[i] = 'x';
-                    console.log(BestScore)
+                    
                     let score = minimax(array.array, 0, false, false)
+                    
                     array.array[i] = null;
                     if (score > BestScore && score != -Infinity) {
                         BestScore = score;
+                        console.log(BestScore);
                         BestMove = i;
                     }
                 }
@@ -148,13 +155,16 @@ const Grid = (array) =>{
             play(BestMove);
             return;
         }
+        if(array.array[4] == null){
+            play(4);
+            return;
+        }
         let BestScore = Infinity;
         for (let i = 0; i < 9; i++){
             if (array.array[i] == null){
                 possibleMove.push(i);
                 array.array[i] = 'o';
-                let score = minimax(array.array, 0, true, true)
-                console.log(BestScore)
+                let score = minimax(array.array, 0, false, true)
                 array.array[i] = null;
                 if (score < BestScore && score != Infinity) {
                     BestScore = score;
@@ -178,10 +188,20 @@ const Grid = (array) =>{
         game.push(<div onClick={() => play(i)} style={cubeStyle}>{array.array[i]}</div>);
     }
     return(
-        <div className="grid">
-            {game}
-            <button onClick={BotMove}>make bot move</button>
-            <button onClick={console.log(array.array)}>console the board</button>
+        <div>
+            <h1>React Tic Tac Toe With AI!</h1>
+            <h3>CLICK TO START</h3>
+            <div>
+                <h1>Moves: {moves}</h1>
+                <div className="MoveButtons">
+                    <button onClick={BotMove}>Make Bot Move</button>
+                    <button onClick={undoMove}>Undo Move</button>
+                </div>
+            </div>
+            <div className="grid">
+                {game}
+                
+            </div>
         </div>
     );
 }
