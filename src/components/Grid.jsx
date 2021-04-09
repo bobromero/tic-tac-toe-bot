@@ -40,11 +40,11 @@ let scores = {
     O: -10,
     tie: 0
 }
-function minimaxO(board, playedGame = [], depth, isMaxing){
+function minimax(board, playedGame = [], depth, isMaxing){
     let result = checkWinner(board, playedGame);
     if (result !== null){
         if(result == 'X'){
-            return 10;
+            return 10 - depth;
         }
         if(result == 'O'){
             return -10 + depth;
@@ -57,7 +57,7 @@ function minimaxO(board, playedGame = [], depth, isMaxing){
             if(board[i]==null){
                 board[i] = "O";
                 playedGame.push(i);
-                let score = minimaxO(board, playedGame, depth + 1, false);
+                let score = minimax(board, playedGame, depth + 1, false);
                 board[i] = null;
                 playedGame.pop();
                 if(score < BestScore && score != Infinity){
@@ -73,56 +73,10 @@ function minimaxO(board, playedGame = [], depth, isMaxing){
             if(board[i]==null){
                 board[i] = 'X';
                 playedGame.push(i);
-                let score = minimaxO(board, playedGame, depth + 1, true);
+                let score = minimax(board, playedGame, depth + 1, true);
                 board[i] = null;
                 playedGame.pop();
                 if(score > BestScore && score != -Infinity){
-                    BestScore = score;
-                }
-            }
-        }
-        return BestScore;
-    }
-}
-function minimax(board, playedGame = [], depth, isMaxing, maxingPlayer){
-    let result = checkWinner(board, playedGame);
-    if( result == 'tie'){
-        return 0 - depth;
-    }
-    if (result !== null){
-        if(result == 'X'){
-            return scores[result]-depth;
-        }
-        if(result == 'O'){
-            return scores[result]+depth;
-        }
-    }
-    if(isMaxing){
-        let BestScore = -Infinity
-        for (let i = 0; i < 9; i++){
-            if(board[i]==null){
-                board[i] = maxingPlayer ? 'X' : 'O';
-                playedGame.push(i);
-                let score = minimax(board, playedGame, depth + 1, false, !maxingPlayer);
-                board[i] = null;
-                playedGame.pop();
-                if(score > BestScore && score != -Infinity){
-                    BestScore = score;
-                }
-            }
-        }
-        return BestScore;
-    }
-    else{
-        let BestScore = Infinity
-        for (let i = 0; i < 9; i++){
-            if(board[i]==null){
-                board[i] = maxingPlayer ? 'X' : 'O';
-                playedGame.push(i);
-                let score = minimax(board, playedGame, depth + 1, true, !maxingPlayer);
-                board[i] = null;
-                playedGame.pop();
-                if(score < BestScore && score != Infinity){
                     BestScore = score;
                 }
             }
@@ -196,32 +150,33 @@ const Grid = (array) =>{
         playMove(index);
     }
     function BotMove(){
-        let BestMove;
         let possibleMove = [];
-        
+        let arr=[];
         if (turn){
-            
             let BestScore = -Infinity;
             for (let i = 0; i < 9; i++){
                 if (array.array[i] == null){
                     possibleMove.push(i);
                     array.array[i] = 'X';
                     played.push(i);
-                    let score = minimax(array.array, played, 0, false, false);
+                    let score = minimax(array.array, played, 0, true);
                     console.log(`Postion: ${i + 1}`);
                     console.log(`Score:${score}`);
                     played.pop();
                     array.array[i] = null;
-                    if (score > BestScore && score != -Infinity) {
+                    if(score == BestScore){
+                        arr.push(i)
+                    }
+                    if (score > BestScore) {
                         BestScore = score;
-                        BestMove = i;
+                        arr = [i];
                     }
                     console.log(`Best Score: ${BestScore}`);
-                    console.log("");
+                    console.log("")
                 }
             }
-            console.log("||||||||||END OF TURN||||||||")
-            play(BestMove);
+            console.log("||||||||||END OF TURN||||||||");
+            play(arr[Math.floor(Math.random() * arr.length)]);
             return;
         }
         let BestScore = Infinity;
@@ -230,42 +185,24 @@ const Grid = (array) =>{
                 possibleMove.push(i);
                 array.array[i] = 'O';
                 played.push(i);
-                let score = minimaxO(array.array, played, 0, false)
+                let score = minimax(array.array, played, 0, false)
                 console.log(`Postion: ${i + 1}`);
                 console.log(`Score:${score}`);
                 played.pop();
                 array.array[i] = null;
+                if(score == BestScore){
+                    arr.push(i)
+                }
                 if (score < BestScore) {
                     BestScore = score;
-                    BestMove = i;
+                    arr = [i];
                 }
                 console.log(`Best Score: ${BestScore}`);
-                 console.log("");
+                console.log("");
             }
         }
-        console.log("||||||||||END OF TURN||||||||")
-        play(BestMove);
-        // let BestScore = Infinity;
-        // for (let i = 0; i < 9; i++){
-        //     if (array.array[i] == null){
-        //         possibleMove.push(i);
-        //         array.array[i] = 'O';
-        //         played.push(i);
-        //         let score = minimax(array.array, played, 0, false, true)
-        //         console.log(`Postion: ${i + 1}`);
-        //         console.log(`Score:${score}`);
-        //         played.pop();
-        //         array.array[i] = null;
-        //         if (score < BestScore && score != Infinity) {
-        //             BestScore = score;
-        //             BestMove = i;
-        //         }
-        //         console.log(`Best Score: ${BestScore}`);
-        //          console.log("");
-        //     }
-        // }
-        // console.log("||||||||||END OF TURN||||||||")
-        // play(BestMove);
+        console.log("||||||||||END OF TURN||||||||");
+        play(arr[Math.floor(Math.random() * arr.length)]);
     }
     for(let i = 0; i < array.array.length; i++){
         let cubeStyle = {
