@@ -5,14 +5,48 @@ html{
 }
 .MoveButtons{
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto auto auto;
   justify-content: center;
   grid-column-gap: 30px;
   padding-bottom: 20px;
 }
+.winScreen{
+  background-color: #121212;
+  height: 210px;
+  width: 300px;
+  position: absolute;
+  top: 58.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.winScreen h1{
+  align-items: center;
+  margin: 0;
+  margin-top: 65px;
+}
+.winScreen button{
+  height: 30px;
+  width: 100px;
+  margin: 10px;
+}
+.winScreen button, .MoveButtons button{
+  border: 2px solid white;
+  color:white;
+  background: transparent;
+  transition: all .4s ease-in-out;
+}
+.winScreen button:hover, .MoveButtons button:hover{
+  color:black;
+  background: white;
+  transition: all .4s ease-in-out;
+}
+.winScreen button:focus, .MoveButtons button:focus{
+  outline: none;
+}
 .MoveButtons button{
   height: 50px;
   width: 150px;
+  
 }
 .game{
   height: 100vh;

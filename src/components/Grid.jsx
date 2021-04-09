@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import WinScreen from './WinScreen'
 let turn = true;
 function checkWinner(board, playedBoard = 0){
     let winner = null;
@@ -81,18 +82,38 @@ function minimax(board, depth, isMaxing, maxingPlayer){
 }
 const Grid = (array) =>{
     const [moves, setMoves] = useState(0);
+    const [isShowing, setIsShowing] = useState(true);
+    const [isTie, setIsTie] = useState(false);
     let [played] = useState([]);
+    const [winner, setWinner] = useState('');
     let game = [];
-    function undoMove(){
+    let style = {
+        display: isShowing ? 'grid' : 'none'
+    }
+    function undoMove(tieClean){
         if(moves <= 0){
             return;
         }
-        playMove(played[played.length-1], true);
+        playMove(played[played.length-1], true, tieClean);
         played.pop(played[played.length-1]);
         setMoves(moves - 1);
         return;
     }
-    function playMove(index, undo = false){
+    function reset(){
+        for(let i = 0; i < 9; i++){
+            undoMove(true);
+        }
+        setMoves(0);
+        setWinner('');
+        setIsShowing(false);
+        turn = true;
+        setIsTie(false);
+    }
+    function displayWinner(winnerP){
+        setWinner(winnerP);
+        setIsShowing(true);
+    }
+    function playMove(index, undo = false, tieClean = false){
         if (played.includes(index) && undo == false){
             return;
         }
@@ -105,15 +126,19 @@ const Grid = (array) =>{
             played.push(index);
         }
         setMoves(moves + 1);
-        
-        
         let hasWon = checkWinner(array.array, played);
+        console.log(hasWon);
         if (hasWon === 'X' || hasWon === 'O'){
+            setTimeout(function(){ displayWinner(hasWon); }, 1000)
             console.log(`${hasWon} Won!`);
         }
-        if (hasWon === 'tie'){
+        if (hasWon === 'tie' && !tieClean){
+            setIsTie(true)
+            setTimeout(function(){ displayWinner(hasWon); }, 1000)
             console.log("Game Over: Draw");
+            return;
         }
+        
     }
     function play(index){
         if(checkWinner(array.array) !== null){
@@ -178,11 +203,19 @@ const Grid = (array) =>{
                 <div className="MoveButtons">
                     <button onClick={BotMove}>Make Bot Move</button>
                     <button onClick={undoMove}>Undo Move</button>
+                    <button onClick={reset}>Reset</button>
                 </div>
             </div>
             <div className="grid">
                 {game}
                 
+            </div>
+            <div style={style}>
+                <WinScreen
+                    winner={winner}
+                    reset={reset}
+                    isTie={isTie}
+                />
             </div>
         </div>
     );
