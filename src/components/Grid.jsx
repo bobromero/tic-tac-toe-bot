@@ -82,7 +82,7 @@ function minimax(board, depth, isMaxing, maxingPlayer){
 }
 const Grid = (array) =>{
     const [moves, setMoves] = useState(0);
-    const [isShowing, setIsShowing] = useState(true);
+    const [isShowing, setIsShowing] = useState(false);
     const [isTie, setIsTie] = useState(false);
     let [played] = useState([]);
     const [winner, setWinner] = useState('');
