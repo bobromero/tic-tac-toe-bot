@@ -127,15 +127,14 @@ const Grid = (array) =>{
         }
         setMoves(moves + 1);
         let hasWon = checkWinner(array.array, played);
-        console.log(hasWon);
         if (hasWon === 'X' || hasWon === 'O'){
             setTimeout(function(){ displayWinner(hasWon); }, 1000)
-            console.log(`${hasWon} Won!`);
+            // console.log(`${hasWon} Won!`);
         }
         if (hasWon === 'tie' && !tieClean){
             setIsTie(true)
             setTimeout(function(){ displayWinner(hasWon); }, 1000)
-            console.log("Game Over: Draw");
+            // console.log("Game Over: Draw");
             return;
         }
         
