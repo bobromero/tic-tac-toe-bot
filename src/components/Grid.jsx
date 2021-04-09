@@ -214,11 +214,11 @@ const Grid = (array) =>{
     return(
         <div>
             <h1>React Tic Tac Toe With AI!</h1>
-            <h3>CLICK TO START</h3>
+            <h3>CLICK THE BOARD TO START</h3>
             <div>
                 <h1>Moves: {moves}</h1>
                 <div className="MoveButtons">
-                    <button onClick={BotMove}>Make Bot Move</button>
+                    <button onClick={BotMove}>Bot Move</button>
                     <button onClick={undoMove}>Undo Move</button>
                     <button onClick={reset}>Reset</button>
                 </div>
