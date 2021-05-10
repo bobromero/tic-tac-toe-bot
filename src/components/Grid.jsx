@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import WinScreen from './WinScreen'
 let turn = true;
 function checkWinner(board, playedBoard = 0){
+    //!idea for checking how a game was finished from WebDevSimplified and The Coding train
     let winner = null;
     //horizontal check
     for(let i = 0; i < 9; i+=3){
@@ -35,12 +36,8 @@ function checkWinner(board, playedBoard = 0){
     }
     return winner;
 }
-let scores = {
-    X: 10,
-    O: -10,
-    tie: 0
-}
 function minimax(board, playedGame = [], depth, isMaxing){
+    //!minimax algorithmn inspired by coding train on youtube
     let result = checkWinner(board, playedGame);
     if (result !== null){
         if(result == 'X'){
@@ -51,6 +48,7 @@ function minimax(board, playedGame = [], depth, isMaxing){
         }
         return 0;
     }
+    //!minimax algorithmn inspired by coding train on youtube
     if(isMaxing){
         let BestScore = Infinity
         for (let i = 0; i < 9; i++){
@@ -67,6 +65,7 @@ function minimax(board, playedGame = [], depth, isMaxing){
         }
         return BestScore;
     }
+    //!minimax algorithmn inspired by coding train on youtube
     else{
         let BestScore = -Infinity
         for (let i = 0; i < 9; i++){
@@ -150,6 +149,7 @@ const Grid = (array) =>{
         playMove(index);
     }
     function BotMove(){
+        //!minimax algorithmn inspired by coding train on youtube
         let possibleMove = [];
         let arr=[];
         if (turn){
